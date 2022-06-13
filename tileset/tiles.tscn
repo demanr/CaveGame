@@ -1,0 +1,197 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://tileset/imgs/bigCaveWalls.png" type="Texture" id=1]
+[ext_resource path="res://tileset/imgs/bigCaveBG.png" type="Texture" id=2]
+[ext_resource path="res://tileset/imgs/caveDoorV1.png" type="Texture" id=3]
+[ext_resource path="res://tileset/imgs/cavePlatform32.png" type="Texture" id=4]
+[ext_resource path="res://tileset/imgs/grassyFloor.png" type="Texture" id=5]
+[ext_resource path="res://tileset/imgs/wallConnector.png" type="Texture" id=6]
+[ext_resource path="res://tileset/imgs/caveWallBG.png" type="Texture" id=7]
+[ext_resource path="res://tileset/imgs/CaveLWall32.png" type="Texture" id=8]
+[ext_resource path="res://tileset/imgs/caveFloor.png" type="Texture" id=9]
+[ext_resource path="res://tileset/imgs/CaveRWall32.png" type="Texture" id=10]
+[ext_resource path="res://tileset/imgs/caveCeiling.png" type="Texture" id=11]
+[ext_resource path="res://tileset/imgs/grassyFloorDecor.png" type="Texture" id=12]
+[ext_resource path="res://tileset/imgs/wallConnectorTL.png" type="Texture" id=13]
+[ext_resource path="res://tileset/imgs/wallConnectorBR.png" type="Texture" id=14]
+[ext_resource path="res://tileset/imgs/wallConnectorTR.png" type="Texture" id=15]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 16, 16 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="caveBG" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="caveBG"]
+
+[node name="Doorway" type="Sprite" parent="."]
+position = Vector2( 124, 0 )
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Doorway"]
+
+[node name="caveWalls" type="Sprite" parent="."]
+position = Vector2( 63, 0 )
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="caveWalls"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="caveWalls/StaticBody2D"]
+shape = SubResource( 1 )
+
+[node name="Platform" type="Sprite" parent="."]
+position = Vector2( 1, 51 )
+texture = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Platform"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Platform/StaticBody2D"]
+polygon = PoolVector2Array( -14, -16, 15, -16, 9, -9, -8, -9 )
+
+[node name="WallCornerL" type="Sprite" parent="."]
+position = Vector2( 49, 140 )
+texture = ExtResource( 6 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="WallCornerL"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallCornerL/StaticBody2D"]
+shape = SubResource( 2 )
+
+[node name="CaveFloor" type="Sprite" parent="."]
+position = Vector2( 139, 139 )
+texture = ExtResource( 9 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveFloor"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveFloor/StaticBody2D"]
+shape = SubResource( 4 )
+
+[node name="CaveCeiling" type="Sprite" parent="."]
+position = Vector2( 139, 95 )
+texture = ExtResource( 11 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveCeiling"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveCeiling/StaticBody2D"]
+shape = SubResource( 4 )
+
+[node name="CaveWallL" type="Sprite" parent="."]
+position = Vector2( 94, 139 )
+texture = ExtResource( 8 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveWallL"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveWallL/StaticBody2D"]
+shape = SubResource( 3 )
+
+[node name="CaveWallR" type="Sprite" parent="."]
+position = Vector2( 94, 94 )
+texture = ExtResource( 10 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveWallR"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveWallR/StaticBody2D"]
+shape = SubResource( 3 )
+
+[node name="CaveWallBG" type="Sprite" parent="."]
+position = Vector2( -1, 141 )
+texture = ExtResource( 7 )
+hframes = 2
+vframes = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveWallBG"]
+
+[node name="GrassyFloor" type="Sprite" parent="."]
+position = Vector2( 63, 44 )
+texture = ExtResource( 5 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="GrassyFloor"]
+
+[node name="GrassyFloorDecor" type="Sprite" parent="."]
+position = Vector2( 123, 46 )
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="GrassyFloorDecor"]
+
+[node name="WallCornerL2" type="Sprite" parent="."]
+position = Vector2( 49, 190 )
+texture = ExtResource( 14 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="WallCornerL2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallCornerL2/StaticBody2D"]
+shape = SubResource( 2 )
+
+[node name="WallCornerL3" type="Sprite" parent="."]
+position = Vector2( 98, 189 )
+texture = ExtResource( 13 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="WallCornerL3"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallCornerL3/StaticBody2D"]
+shape = SubResource( 2 )
+
+[node name="WallCornerL4" type="Sprite" parent="."]
+position = Vector2( 141, 189 )
+texture = ExtResource( 15 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="WallCornerL4"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallCornerL4/StaticBody2D"]
+shape = SubResource( 2 )
