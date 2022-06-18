@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fonts/Basic96.tres" type="DynamicFont" id=1]
+[ext_resource path="res://tileset/tileset2.tres" type="TileSet" id=2]
+[ext_resource path="res://tileset/tileset.tres" type="TileSet" id=3]
+[ext_resource path="res://scripts/Main.gd" type="Script" id=4]
+[ext_resource path="res://tileset/extrasTileset.tres" type="TileSet" id=5]
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="Rooms" type="Node" parent="."]
+
+[node name="Enemies" type="Node" parent="."]
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 32, 32 )
+collision_layer = 2
+collision_mask = 5
+format = 1
+
+[node name="Platforms" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 32, 32 )
+collision_layer = 2
+collision_mask = 5
+format = 1
+
+[node name="Spikes" type="TileMap" parent="."]
+tile_set = ExtResource( 5 )
+cell_size = Vector2( 16, 16 )
+format = 1
+
+[node name="LoadCam" type="Camera2D" parent="."]
+current = true
+zoom = Vector2( 5, 5 )
+
+[node name="Label" type="Label" parent="LoadCam"]
+margin_right = 48.0
+margin_bottom = 64.0
+custom_fonts/font = ExtResource( 1 )
+text = "STAM"

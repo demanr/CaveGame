@@ -1,15 +1,15 @@
 extends KinematicBody2D
 
 const UP = Vector2(0,-1)
-const GRAVITY = 20
+const GRAVITY = 18
 const MAXFALLSPEED = 300
-const MAXSPEED = 100
-const JUMPFORCE = 350
-const ACCEL = 15
+const MAXSPEED =  300 #100
+const JUMPFORCE =  450 #350
+const ACCEL =  30 #15
 
 var motion = Vector2()
 var facing_right = true
-var max_jumps = 100
+var max_jumps = 20
 var jump_count = 0
 
 
@@ -19,7 +19,6 @@ func _ready():
 
 
 func _physics_process(delta):
-
 	motion.y += GRAVITY
 	if motion.y > MAXFALLSPEED:
 		motion.y = MAXFALLSPEED
@@ -52,12 +51,13 @@ func _physics_process(delta):
 		
 	if Input.is_action_just_pressed("jump"):
 		if is_on_floor():
-			motion.y = -JUMPFORCE
+			motion.y = - JUMPFORCE
 		elif jump_count < max_jumps:
-			motion.y = -JUMPFORCE #/ 1.5
-				
+			motion.y = -JUMPFORCE  / 1.5
 		jump_count += 1
-
+	if 	Input.is_action_just_released("jump"):
+		motion.y /= 2
+		
 	if !is_on_floor():
 		if motion.y < 0:
 			$AnimationPlayer.play("jump")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://tileset/imgs/bigCaveWalls.png" type="Texture" id=1]
 [ext_resource path="res://tileset/imgs/bigCaveBG.png" type="Texture" id=2]
@@ -15,6 +15,9 @@
 [ext_resource path="res://tileset/imgs/wallConnectorTL.png" type="Texture" id=13]
 [ext_resource path="res://tileset/imgs/wallConnectorBR.png" type="Texture" id=14]
 [ext_resource path="res://tileset/imgs/wallConnectorTR.png" type="Texture" id=15]
+[ext_resource path="res://tileset/imgs/caveWallLimeBG.png" type="Texture" id=16]
+[ext_resource path="res://tileset/imgs/caveWallAmythBG.png" type="Texture" id=17]
+[ext_resource path="res://tileset/imgs/caveWallCyanBG.png" type="Texture" id=18]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 16, 16 )
@@ -26,6 +29,9 @@ extents = Vector2( 16, 16 )
 extents = Vector2( 16, 16 )
 
 [sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 16, 16 )
 
 [node name="Node2D" type="Node2D"]
@@ -132,15 +138,16 @@ __meta__ = {
 shape = SubResource( 3 )
 
 [node name="CaveWallBG" type="Sprite" parent="."]
-position = Vector2( -1, 141 )
+position = Vector2( -2, 236 )
 texture = ExtResource( 7 )
-hframes = 2
-vframes = 2
 __meta__ = {
 "_edit_group_": true
 }
 
 [node name="StaticBody2D" type="StaticBody2D" parent="CaveWallBG"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveWallBG/StaticBody2D"]
+shape = SubResource( 5 )
 
 [node name="GrassyFloor" type="Sprite" parent="."]
 position = Vector2( 63, 44 )
@@ -195,3 +202,53 @@ __meta__ = {
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallCornerL4/StaticBody2D"]
 shape = SubResource( 2 )
+
+[node name="CaveWallAmeth" type="Sprite" parent="."]
+position = Vector2( 49, 236 )
+texture = ExtResource( 17 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveWallAmeth"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveWallAmeth/StaticBody2D"]
+shape = SubResource( 5 )
+
+[node name="CaveWallLime" type="Sprite" parent="."]
+position = Vector2( 99, 237 )
+texture = ExtResource( 16 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveWallLime"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveWallLime/StaticBody2D"]
+shape = SubResource( 5 )
+
+[node name="CaveWallCyan" type="Sprite" parent="."]
+position = Vector2( 145, 237 )
+texture = ExtResource( 18 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CaveWallCyan"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveWallCyan/StaticBody2D"]
+shape = SubResource( 5 )
+
+[node name="Platform1Way" type="Sprite" parent="."]
+modulate = Color( 0.454902, 0.941176, 0.509804, 1 )
+position = Vector2( 193, 0 )
+texture = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Platform1Way"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Platform1Way/StaticBody2D"]
+polygon = PoolVector2Array( -14, -16, 15, -16, 9, -9, -8, -9 )
+one_way_collision = true
