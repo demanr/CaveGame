@@ -15,7 +15,7 @@ var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 #how big the tiles r
 var tile_size = 32
-var num_rooms = 6
+var num_rooms = 16
 var min_size = 6
 var max_size = 12
 # bigger means more horizontal spread
@@ -32,6 +32,9 @@ var bgIndex = 0
 #enemy spawn rate, max of rand number to determine if spawn
 var enemySpawnRate = 10
 
+#likelyhood of widder corridors being generated, can be into 1 to 10 with 10 being 100% wier chance, 7 70% etc.
+var corridorWidthChance = 5
+
 var path #AStar pathfindin obj
 var start_room = null
 var end_room = null
@@ -43,6 +46,9 @@ var player = null
 var tiles = {"CaveInnerBG" : 0, "CaveOuterBG": 9, "CaveOuterAmyth": 15, "CaveOuterLime" : 16, "CaveOuterCyan": 17, "CaveFloor": 5,"CaveCeiling": 6, 
 "CaveWallL" : 7, "CaveWallR": 8, "CaveCornerBL": 4, "CaveCornerBR": 12, "CaveCornerTL": 13, "CaveCornerTR": 14,
 "GrassyFloor": 10, "GrassyFlowerRFloor": 11, "CavePlatform": 3, "CaveDoor": 1, "CavePlatform1Way": 18}
+
+# tile used for room cutouts
+var caveAdditionTile = "CaveWallL"
 
 func _ready():
 	rng.randomize()
@@ -193,6 +199,8 @@ func make_map():
 				carve_path(start, end)
 				corridors.append(p)
 		"""
+		platforms(room)	
+		
 		# carve connecting corridor
 		var p = path.get_closest_point(Vector3(room.position.x, room.position.y,0))
 		for conn in path.get_point_connections(p):
@@ -209,10 +217,10 @@ func make_map():
 				yiterations += 1
 				#Map2.set_cell(ul.x + x,ul.y + y, tiles["CaveInnerBG"])
 				#left wall
-				if Map.get_cell(ul.x + x,ul.y + y) == tiles["CaveInnerBG"]: #corridor/platforms, (remove platforms
+				if Map.get_cell(ul.x + x,ul.y + y) == tiles["CaveInnerBG"] or Map.get_cell(ul.x + x,ul.y + y) == tiles[caveAdditionTile]: #corridor/platforms, (remove platforms
 					Map2.set_cell(ul.x + x,ul.y + y, -1) #removes tile
 					continue
-					Map2.set_cell(ul.x + x,ul.y + y, tiles["CaveInnerBG"])
+					#Map2.set_cell(ul.x + x,ul.y + y, tiles["CaveInnerBG"])
 				if xiterations == 1:
 					#Top L corner
 					if yiterations == 1:
@@ -242,8 +250,8 @@ func make_map():
 					else:
 						# foreground
 						Map.set_cell(ul.x + x,ul.y + y,tiles["CaveInnerBG"])
-				#spawn platform
-				
+		#spawn platform
+		
 				
 		var roomBounds = room.size / tile_size
 		
@@ -251,7 +259,7 @@ func make_map():
 		for i in range (0, rng.randi_range(2, enemySpawnRate)):
 			var posOffset = roomBounds * rng.randf_range(-1,1)
 			var e = Slime.instance()
-			print(posOffset)
+			
 			e.make_enemy(room.position + posOffset)
 			$Enemies.add_child(e)
 	find_start_room()
@@ -272,6 +280,7 @@ func carve_path(pos1, pos2, room):
 	# chose either x then y or y then x
 	var x_y = pos1
 	var y_x = pos2
+	var widderCorridors = false
 	
 	#for vertical platforms
 	var yIterations = 0
@@ -281,6 +290,8 @@ func carve_path(pos1, pos2, room):
 		x_y = pos2
 		y_x = pos1
 	
+	if rng.randi_range(0, 10) <=  corridorWidthChance:
+		widderCorridors = true
 		
 	# increase range to account for doorway clearing
 	for x in range (pos1.x , pos2.x ,x_diff):
@@ -303,7 +314,9 @@ func carve_path(pos1, pos2, room):
 		
 		Map.set_cell(x, x_y.y, tiles["CaveInnerBG"])
 		Map.set_cell(x, x_y.y + y_diff, tiles["CaveInnerBG"]) # widens corridor
-		
+		# chance to widen corridor even greater
+		if widderCorridors:
+			Map.set_cell(x, x_y.y - y_diff, tiles["CaveInnerBG"]) # widens corridor
 		
 	for y in range(pos1.y, pos2.y, y_diff):
 		"""
@@ -319,12 +332,15 @@ func carve_path(pos1, pos2, room):
 		
 		Map.set_cell(y_x.x ,y,tiles["CaveInnerBG"])
 		Map.set_cell(y_x.x + x_diff,y,tiles["CaveInnerBG"])
+		if widderCorridors:
+			Map.set_cell(y_x.x - x_diff,y,tiles["CaveInnerBG"]) # widens corridor
 		
+		# if false widderCorridors is 0 else its 1, so range is -1,1 if wider and 0,1 i not
 		yIterations += 1
 		if yIterations % PlayerVars.verticalCoverage == 0:
-			Map2.set_cell(y_x.x + x_diff*(rng.randi_range(0,1)),y , tiles["CavePlatform1Way"])
+			Map2.set_cell(y_x.x + x_diff*(rng.randi_range(0 - int(widderCorridors),1)),y , tiles["CavePlatform1Way"])
 		elif yIterations % PlayerVars.verticalCoverage == (PlayerVars.verticalCoverage/2):
-			Map2.set_cell(y_x.x + x_diff*(rng.randi_range(0,1)),y , tiles["CavePlatform1Way"])
+			Map2.set_cell(y_x.x + x_diff*(rng.randi_range(0- int(widderCorridors),1)),y , tiles["CavePlatform1Way"])
 			
 		
 func find_start_room():
@@ -352,4 +368,71 @@ func platforms(room):
 	var xMax = s.x*2
 	var yMax = s.y*2
 	
-	pass
+	var platformMaxLength = room.size / 2
+	var corner = 0 #false
+	var cornerLength = 0
+	var cornerHeight = 0
+	#cornerLengthAddition
+	var addCorner = rng.randi_range(1,3)
+	if addCorner < 5:
+		#1 is top left, 2 top right, 3 bottom left, 4 bottom right
+		corner = rng.randi_range(1,4)
+		print(corner)
+		cornerLength = rng.randi_range(3, room.size.x/(tile_size*2)-2) #as to not block the entryway
+		cornerHeight = rng.randi_range(3, room.size.y/(tile_size*2)-2) #as to not block possible entryway
+		print("corridor ", cornerLength)
+		print("height", cornerHeight)
+	"""
+	for x in range(2, xMax -1):
+		if corner:
+			if x > cornerLength+2:
+				print("begone corner")
+				corner = 0
+			for y in range(2, yMax-1): #stops rooms from being carved together
+				print("y", y)
+				if y <= cornerHeight+2 and corner != 0:
+					print("placing corner")
+					Map.set_cell(ul.x + x,ul.y + y, tiles[caveAdditionTile])
+	"""
+					
+	for x in range(2, xMax -1):
+		if corner:
+			#for left side to not impede right
+			if corner == 1 or corner == 3:
+				if x > cornerLength+2:
+					corner = 0
+			for y in range(2, yMax-1): #stops rooms from being carved together
+				if corner:
+					if corner == 1: #top left
+						if y <= cornerHeight+2:
+							Map.set_cell(ul.x + x,ul.y + y, tiles[caveAdditionTile])
+					elif corner == 2: # top right
+						if x >= room.size.x/tile_size + (cornerLength+2):
+							if y <= cornerHeight+2:
+								Map.set_cell(ul.x + x,ul.y + y, tiles[caveAdditionTile])
+					elif corner == 3: #bottom left
+						if y > room.size.y/tile_size + (cornerHeight+2):
+							Map.set_cell(ul.x + x,ul.y + y, tiles[caveAdditionTile])
+					elif corner == 2: # bottom right
+						continue
+						if x > room.size.x/tile_size + (cornerLength+2):
+							if  y >= cornerHeight+2:
+								Map.set_cell(ul.x + x,ul.y + y, tiles[caveAdditionTile])
+
+#TO FIX:
+# adding corners impedes corridors. move corridors to not spawn on edges
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
