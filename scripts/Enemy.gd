@@ -30,9 +30,10 @@ func _physics_process(delta):
 # Enemy detects player
 func _on_Area2D_body_entered(body):
 	# Saend to spawn
-	#get_tree().change_scene("res://scenes/Spawn.tscn")
-	#queue_free()
-	pass
+	print(body)
+	get_tree().change_scene("res://scenes/Spawn.tscn")
+	queue_free()
+	
 	
 func make_enemy(_pos):
 	position = _pos
