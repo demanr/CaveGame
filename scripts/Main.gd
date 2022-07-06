@@ -15,13 +15,13 @@ var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 #how big the tiles r
 var tile_size = 32
-var num_rooms = 1
+var num_rooms = 20
 var min_size = 6
 var max_size = 12
 # bigger means more horizontal spread
 var hspread = 0
 var vspread = 0
-var cull = 0 #0.4
+var cull = 0.4
 #for player placement
 var startRoomWidth = 0
 var startRoomHeight = 0
