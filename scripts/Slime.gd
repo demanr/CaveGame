@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+var DEATH = preload("res://scenes/SlimeDeath.tscn")
+
 const SPEED = 20
 
 var velocity = Vector2()
@@ -30,6 +32,7 @@ func _physics_process(delta):
 # Enemy detects player
 func _on_Area2D_body_entered(body):
 	# Saend to spawn
+	print("SLIME ", body)
 	if PlayerVars.health < 1:
 		get_tree().change_scene("res://scenes/Spawn.tscn")
 		queue_free()
@@ -37,10 +40,17 @@ func _on_Area2D_body_entered(body):
 		PlayerVars.health -= 1
 		PlayerVars.respawn = true
 		print(PlayerVars.health)
+	die()
 
+
+func die():
+	var die = DEATH.instance()
+	get_parent().add_child(die)
+	die.global_transform = global_transform
+	queue_free()
 
 func make_enemy(_pos):
 	position = _pos
 	
 
-	
+

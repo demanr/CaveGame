@@ -1,5 +1,8 @@
 extends KinematicBody2D
 
+#path of bullet
+const bulletPath = preload("res://scenes/Bullet.tscn")
+
 const UP = Vector2(0,-1)
 const GRAVITY = 18
 const MAXFALLSPEED = 300
@@ -65,6 +68,26 @@ func _physics_process(delta):
 			$AnimationPlayer.play("fall")
 	motion = move_and_slide(motion, UP)
 	
+	#handles shooting
+	if Input.is_action_just_pressed("shoot"):
+		shoot()
+	
+	
+	if PlayerVars.respawn == true:
+		position = PlayerVars.startPos 
+		PlayerVars.respawn = false
+	
+	#for bullet direction
+	$Node2D.look_at(get_global_mouse_position())
+	
+func shoot():
+	var bullet = bulletPath.instance()
+	
+	get_parent().add_child(bullet)
+	bullet.position = $Node2D/Position2D.global_position
+	
+	bullet.velocity = get_global_mouse_position() - bullet.position
+
 # camera changes REMOVE LATER
 func _input(event):
 	if event.is_action_pressed('scroll-up'):

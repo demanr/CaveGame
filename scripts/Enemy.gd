@@ -29,7 +29,7 @@ func _physics_process(delta):
 
 # Enemy detects player
 func _on_Area2D_body_entered(body):
-	# Saend to spawn
+	# Send to spawn
 	print(body)
 	get_tree().change_scene("res://scenes/Spawn.tscn")
 	queue_free()

@@ -15,6 +15,8 @@ __meta__ = {
 
 [node name="Enemies" type="Node" parent="."]
 
+[node name="Doors" type="Node" parent="."]
+
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
 cell_size = Vector2( 32, 32 )
@@ -35,11 +37,13 @@ cell_size = Vector2( 16, 16 )
 format = 1
 
 [node name="LoadCam" type="Camera2D" parent="."]
-current = true
 zoom = Vector2( 5, 5 )
 
 [node name="Label" type="Label" parent="LoadCam"]
-margin_right = 48.0
+margin_right = 192.0
 margin_bottom = 64.0
 custom_fonts/font = ExtResource( 1 )
 text = "STAM"
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color( 0.384314, 0.384314, 0.384314, 1 )

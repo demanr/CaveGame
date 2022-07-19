@@ -6,6 +6,7 @@ var Player = preload("res://player/Player.tscn")
 var font = preload("res://fonts/Basic96.tres")
 var Enemy = preload("res://scenes/Enemy.tscn")
 var Slime = preload("res://scenes/Slime.tscn")
+var Door = preload("res://scenes/Door.tscn")
 
 onready var Map = $TileMap
 onready var Map2 = $Platforms
@@ -15,7 +16,7 @@ var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 #how big the tiles r
 var tile_size = 32
-var num_rooms = 20
+var num_rooms = 10
 var min_size = 6
 var max_size = 12
 # bigger means more horizontal spread
@@ -117,8 +118,14 @@ func _input(event):
 			n.queue_free()
 		for e in $Enemies.get_children():
 			e.queue_free()
+		for d in $Doors.get_children():
+			d.queue_free()
 		path = null
 		make_rooms()
+		
+		# for testing 
+		yield(get_tree().create_timer(1.5), 'timeout')
+		make_map()
 	if event.is_action_pressed("ui_focus_next"):
 		make_map()
 	if event.is_action_pressed("ui_cancel"):
@@ -273,9 +280,18 @@ func make_map():
 	find_end_room()
 	# middle of start room
 	var startRoomCenter = (start_room.position/ tile_size).floor()
+	var endRoomCenter = (end_room.position/ tile_size).floor()
 	#room door/start platform
+	"""var exitDoor = Door.instance()
+	# fix exact position
+	exitDoor.place_door(start_room.position.x, start_room.position.y)
+	$Doors.add_child(exitDoor)"""
+	
 	Map2.set_cell(startRoomCenter.x, startRoomCenter.y, tiles["CaveDoor"])
 	Map2.set_cell(startRoomCenter.x, startRoomCenter.y + 1, tiles["CavePlatform"])
+	Map2.set_cell(startRoomCenter.x, startRoomCenter.y - 1, tiles["CavePlatform1Way"])
+	
+	Map2.set_cell(endRoomCenter.x, endRoomCenter.y, tiles["CaveDoor"])
 	
 func carve_path(pos1, pos2, room):
 	# carve path btwn pts
@@ -363,8 +379,8 @@ func find_start_room():
 func find_end_room():
 	var max_x = -INF
 	for room in $Rooms.get_children():
-		if room.position.x < max_x:
-			start_room = room
+		if room.position.x > max_x:
+			end_room = room
 			max_x = room.position.x
 
 # generates platforms
