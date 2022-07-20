@@ -28,5 +28,11 @@ func _on_Area2D_body_entered(body):
 	var splat = SPLAT.instance()
 	get_parent().add_child(splat)
 	splat.global_transform = global_transform
+	
 	queue_free()
-
+	
+	#this means target is enemy
+	if "Slime" in body.get_name():
+		body.die()
+	
+	

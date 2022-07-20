@@ -14,7 +14,8 @@ var motion = Vector2()
 var facing_right = true
 var max_jumps = 20
 var jump_count = 0
-
+# is true if player is dead
+var hasJustDied = true
 
 func _ready():
 	#position.y -= 750
@@ -22,6 +23,10 @@ func _ready():
 
 
 func _physics_process(delta):
+	if PlayerVars.health < 1:
+		get_tree().change_scene("res://scenes/Spawn.tscn")
+		queue_free()
+		PlayerVars.resetStats()
 	motion.y += GRAVITY
 	if motion.y > MAXFALLSPEED:
 		motion.y = MAXFALLSPEED
@@ -33,52 +38,67 @@ func _physics_process(delta):
 	# limits motion btwn two numbers
 	motion.x = clamp(motion.x, -MAXSPEED, MAXSPEED)
 	
-	if Input.is_action_pressed("right"):
-		motion.x += ACCEL
-		facing_right = true
-		$AnimationPlayer.play("walk")
-		if Input.is_action_pressed("sprint"):
-			motion.x += ACCEL*4
-	elif Input.is_action_pressed("left"):
-		motion.x -= ACCEL
-		facing_right = false
-		$AnimationPlayer.play("walk")
-		if Input.is_action_pressed("sprint"):
-			motion.x -= ACCEL*2
-	else:
-		# slows gradually
-		motion.x = lerp(motion.x, 0, 0.2)
-		$AnimationPlayer.play("idle")
-	if is_on_floor():
-		jump_count = 0
-		
-	if Input.is_action_just_pressed("jump"):
-		if is_on_floor():
-			motion.y = - JUMPFORCE
-		elif jump_count < max_jumps:
-			motion.y = -JUMPFORCE  / 1.5
-		jump_count += 1
-	if 	Input.is_action_just_released("jump"):
-		motion.y /= 2
-		
-	if !is_on_floor():
-		if motion.y < 0:
-			$AnimationPlayer.play("jump")
-		elif motion.y > 0:
-			$AnimationPlayer.play("fall")
-	motion = move_and_slide(motion, UP)
-	
-	#handles shooting
-	if Input.is_action_just_pressed("shoot"):
-		shoot()
-	
-	
 	if PlayerVars.respawn == true:
-		position = PlayerVars.startPos 
-		PlayerVars.respawn = false
-	
-	#for bullet direction
-	$Node2D.look_at(get_global_mouse_position())
+		#ensures death animation only plays once
+		if hasJustDied:
+			$AnimationPlayer.play("death")
+			hasJustDied = false
+		if Input.is_action_pressed('ui_accept'):
+			$AnimationPlayer.play("revive")
+			#position = PlayerVars.startPos
+			#PlayerVars.respawn = false - reset after animation
+			#allows death anim to play next death
+			
+			
+	else:
+		if Input.is_action_pressed("right"):
+			motion.x += ACCEL
+			facing_right = true
+			#anim only plays if player is not jumping
+			is_on_floor() and $AnimationPlayer.play("walk")
+			if Input.is_action_pressed("sprint"):
+				motion.x += ACCEL*4
+		elif Input.is_action_pressed("left"):
+			motion.x -= ACCEL
+			facing_right = false
+			#anim only plays if player is not jumping
+			is_on_floor() and $AnimationPlayer.play("walk")
+			if Input.is_action_pressed("sprint"):
+				motion.x -= ACCEL*2
+		else:
+			# slows gradually
+			motion.x = lerp(motion.x, 0, 0.2)
+			#anim only plays if player is not jumping
+			#is_on_floor() and $AnimationPlayer.play("idle")
+		if is_on_floor():
+			jump_count = 0
+			
+		if Input.is_action_just_pressed("jump"):
+			if is_on_floor():
+				motion.y = - JUMPFORCE
+			elif jump_count < max_jumps:
+				motion.y = -JUMPFORCE  / 1.5
+			jump_count += 1
+		if 	Input.is_action_just_released("jump"):
+			motion.y /= 2
+			
+		if !is_on_floor():
+			if motion.y < 0:
+				$AnimationPlayer.play("jump")
+			elif $FloorChecker.is_colliding():
+				$AnimationPlayer.play("splat")
+			elif motion.y > 0:
+				$AnimationPlayer.play("fall")
+			
+		motion = move_and_slide(motion, UP)
+		
+		#handles shooting
+		if Input.is_action_just_pressed("shoot"):
+			shoot()
+		
+		
+		#for bullet direction
+		$Node2D.look_at(get_global_mouse_position())
 	
 func shoot():
 	var bullet = bulletPath.instance()
@@ -94,3 +114,7 @@ func _input(event):
 		$Camera2D.zoom = $Camera2D.zoom - Vector2(0.1, 0.1)
 	if event.is_action_pressed('scroll-down'):
 		$Camera2D.zoom = $Camera2D.zoom + Vector2(0.2, 0.2)
+
+func respawn():
+	hasJustDied = true
+	PlayerVars.respawn = false
