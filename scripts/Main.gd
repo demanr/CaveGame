@@ -286,6 +286,10 @@ func make_map():
 				if MapWall.get_cell(ul.x + x,ul.y + y) != -1:
 					spawnVine -= 1
 					continue
+				
+				if y == 2 and Map.get_cell(ul.x + x,ul.y + y - 1) == tiles["CaveInnerBG"]:
+					#ensures no vines if inner BG above top tile
+					spawnVine = 0
 					
 				#Vine Decoration
 				if spawnVine <= 0:
@@ -297,7 +301,9 @@ func make_map():
 				else:
 					spawnVine -= 1
 					MapVines.set_cell(ul.x + x,ul.y + y, tiles["Vines" + str(rng.randi_range(1,4))])
-		
+					
+				
+				
 		spawnEnemies(room, xMax/2, yMax/2, ul)
 	find_start_room()
 	find_end_room()
