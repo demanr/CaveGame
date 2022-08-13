@@ -18,7 +18,6 @@ func _physics_process(delta):
 		if !flipped:
 			scale.x *= -1
 			flipped = true
-		#Sprite.flip_h = true
 		
 	$AnimationPlayer.play("idle")
 	
