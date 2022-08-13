@@ -17,9 +17,11 @@ var jump_count = 0
 # is true if player is dead
 var hasJustDied = true
 
+#to ensure falling animation only played once
+var justFallen = true
+
 func _ready():
-	#position.y -= 750
-	pass # Replace with function body.
+	pass
 
 
 func _physics_process(delta):
@@ -40,21 +42,20 @@ func _physics_process(delta):
 	
 	if PlayerVars.respawn == true:
 		#ensures death animation only plays once
-		if hasJustDied:
+		if hasJustDied:				
 			$AnimationPlayer.play("death")
 			hasJustDied = false
+		if motion.x != 0:
+			motion.x = lerp(motion.x, 0, 0.2)
 		if Input.is_action_pressed('ui_accept'):
 			$AnimationPlayer.play("revive")
-			#position = PlayerVars.startPos
-			#PlayerVars.respawn = false - reset after animation
-			#allows death anim to play next death
-			
+				
 			
 	else:
 		if Input.is_action_pressed("right"):
 			motion.x += ACCEL
 			facing_right = true
-			#anim only plays if player is not jumping
+			#animation only plays if player is not jumping
 			is_on_floor() and $AnimationPlayer.play("walk")
 			if Input.is_action_pressed("sprint"):
 				motion.x += ACCEL*4
@@ -69,12 +70,14 @@ func _physics_process(delta):
 			# slows gradually
 			motion.x = lerp(motion.x, 0, 0.2)
 			#anim only plays if player is not jumping
-			#is_on_floor() and $AnimationPlayer.play("idle")
+			#is_on_floor() and $AnimationPlayer.play("idle") -- idle anim TBA
 		if is_on_floor():
 			jump_count = 0
+			justFallen = true
 			
 		if Input.is_action_just_pressed("jump"):
 			if is_on_floor():
+				print(position)
 				motion.y = - JUMPFORCE
 			elif jump_count < max_jumps:
 				motion.y = -JUMPFORCE  / 1.5
@@ -88,9 +91,11 @@ func _physics_process(delta):
 			elif $FloorChecker.is_colliding():
 				$AnimationPlayer.play("splat")
 			elif motion.y > 0:
-				$AnimationPlayer.play("fall")
+				if justFallen:
+					$AnimationPlayer.play("fall")
+					justFallen = false
 			
-		motion = move_and_slide(motion, UP)
+		
 		
 		#handles shooting
 		if Input.is_action_just_pressed("shoot"):
@@ -99,7 +104,7 @@ func _physics_process(delta):
 		
 		#for bullet direction
 		$Node2D.look_at(get_global_mouse_position())
-	
+	motion = move_and_slide(motion, UP)
 func shoot():
 	var bullet = bulletPath.instance()
 	
@@ -108,7 +113,7 @@ func shoot():
 	
 	bullet.velocity = get_global_mouse_position() - bullet.position
 
-# camera changes REMOVE LATER
+# camera changes for debug
 func _input(event):
 	if event.is_action_pressed('scroll-up'):
 		$Camera2D.zoom = $Camera2D.zoom - Vector2(0.1, 0.1)
