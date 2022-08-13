@@ -297,13 +297,6 @@ func make_map():
 				else:
 					spawnVine -= 1
 					MapVines.set_cell(ul.x + x,ul.y + y, tiles["Vines" + str(rng.randi_range(1,4))])
-		for x in range(2, xMax-1):
-			#floor placement can begin midway through room height
-			for y in range(s.x, yMax):
-				if Map.get_cell(ul.x + x,ul.y + y) in outerTiles or MapWall.get_cell(ul.x + x,ul.y + y) in outerTiles:
-					MapDecor.set_cell(ul.x + x,ul.y + y, tiles["GroundDecor"])
-					break
-		
 		
 		spawnEnemies(room, xMax/2, yMax/2, ul)
 	find_start_room()
@@ -311,7 +304,23 @@ func make_map():
 	
 	createExit()
 	
-	
+	print("rect size ", full_rect.size)
+	print("full rect ", full_rect.position)
+	print("full rect end ", full_rect.end)
+
+	for tile in Map.get_used_cells_by_id(tiles["CaveInnerBG"]):
+		if Map.get_cell(tile.x, tile.y+1) in outerTiles:
+			if MapWall.get_cell(tile.x, tile.y) == -1:
+				MapDecor.set_cell(tile.x,tile.y+1, tiles["GroundDecor"])
+				continue
+				
+		if MapWall.get_cell(tile.x, tile.y+1) in outerTiles:
+			if MapWall.get_cell(tile.x, tile.y) in outerTiles:
+				continue
+			else:
+				MapDecor.set_cell(tile.x,tile.y+1, tiles["GroundDecor"])
+			
+
 func carve_path(pos1, pos2, room):
 	# carve path btwn pts
 	
