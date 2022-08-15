@@ -36,8 +36,8 @@ var startRoomHeight = 0
 #for generating paths
 var bgIndex = 0
 
-#enemy spawn rate, max of rand number to determine if spawn
-var enemySpawnRate = 0
+#enemy spawn rate, max of rand number to determine if enemy spawn
+var enemySpawnRate = 8
 
 #likelyhood of widder corridors being generated, 1-10
 var corridorWidthChance = 5
@@ -59,6 +59,8 @@ var tiles = {"CaveInnerBG" : 0, "CavePlatform": 8, "CavePlatform1Way": 23, "Cave
 
 #tiles that make up outer layer
 var outerTiles = [tiles["CaveOuter1"], tiles["CaveOuter2"], tiles["CaveOuter3"], tiles["CaveOuter4"]]
+
+var enemySpawnTiles = [tiles["CaveOuter1"], tiles["CaveOuter2"], tiles["CaveOuter3"], tiles["CaveOuter4"], tiles["CavePlatform1Way"] ]
 
 # tile used for room cutouts
 var caveAdditionTile = "CaveOuter"
@@ -302,18 +304,33 @@ func make_map():
 					spawnVine -= 1
 					MapVines.set_cell(ul.x + x,ul.y + y, tiles["Vines" + str(rng.randi_range(1,4))])
 					
+	var spawnEnemy = 0
+	var posOffset = 0
+	var enemyPos = 0
+	var enemyInstance = 0
+	#spawn enemies	
+	for tile in Map2.get_used_cells_by_id(tiles["CavePlatform1Way"]):
+		print(tile)
+		#ensures space above to place enemy
+		if Map.get_cell(tile.x, tile.y-1) == tiles["CaveInnerBG"] and MapWall.get_cell(tile.x, tile.y-1) == -1:
+			spawnEnemy = rng.randi_range(1, enemySpawnRate)
+			#spawn slime
+			if spawnEnemy == 1:
+				enemyPos = Map2.map_to_world(tile) - Vector2(0,8)
+				enemyInstance = Slime.instance()
+				enemyInstance.make_enemy(enemyPos)
+				$Enemies.add_child(enemyInstance)
+			#spawn enemy 2
+			elif spawnEnemy == 3:
+				pass
 				
-				
-		spawnEnemies(room, xMax/2, yMax/2, ul)
+		#spawnEnemies(room, xMax/2, yMax/2, ul)
 	find_start_room()
 	find_end_room()
 	
 	createExit()
-	
-	print("rect size ", full_rect.size)
-	print("full rect ", full_rect.position)
-	print("full rect end ", full_rect.end)
 
+	#add grass/ground decor
 	for tile in Map.get_used_cells_by_id(tiles["CaveInnerBG"]):
 		if Map.get_cell(tile.x, tile.y+1) in outerTiles:
 			if MapWall.get_cell(tile.x, tile.y) == -1:
