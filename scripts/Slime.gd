@@ -31,7 +31,7 @@ func _physics_process(delta):
 
 # Enemy detects player
 func _on_Area2D_body_entered(body):
-	# Saend to spawn
+	# Send to spawn
 	if PlayerVars.respawn == true:
 		return
 	
@@ -43,8 +43,10 @@ func _on_Area2D_body_entered(body):
 
 
 func die():
+	#Instance death animation
 	var die = DEATH.instance()
 	get_parent().add_child(die)
+	#moves death instance to current position
 	die.global_transform = global_transform
 	queue_free()
 
