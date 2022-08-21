@@ -16,7 +16,7 @@ var max_jumps = 20
 var jump_count = 0
 # is true if player is dead
 var hasJustDied = true
-
+var instaDeath = false
 #to ensure falling animation only played once
 var justFallen = true
 
@@ -25,10 +25,14 @@ func _ready():
 
 
 func _physics_process(delta):
-	if PlayerVars.health < 1:
-		get_tree().change_scene("res://scenes/Spawn.tscn")
+	#instant death
+	if PlayerVars.health == -1:
+		instaDeath = true
+	elif PlayerVars.health < 1:
+		get_tree().change_scene(PlayerVars.spawn)
 		queue_free()
 		PlayerVars.resetStats()
+	
 	motion.y += GRAVITY
 	if motion.y > MAXFALLSPEED:
 		motion.y = MAXFALLSPEED
@@ -42,12 +46,18 @@ func _physics_process(delta):
 	
 	if PlayerVars.respawn == true:
 		#ensures death animation only plays once
-		if hasJustDied:				
-			$AnimationPlayer.play("death")
+		if hasJustDied:		
+			if instaDeath:		
+				queue_free()
+			else:
+				$AnimationPlayer.play("death")
 			hasJustDied = false
 		if motion.x != 0:
 			motion.x = lerp(motion.x, 0, 0.2)
 		if Input.is_action_pressed('ui_accept'):
+			if instaDeath:
+				get_tree().change_scene(PlayerVars.spawn)
+				PlayerVars.resetStats()
 			$AnimationPlayer.play("revive")
 				
 			
