@@ -48,7 +48,8 @@ func _physics_process(delta):
 		#ensures death animation only plays once
 		if hasJustDied:		
 			if instaDeath:		
-				queue_free()
+				#player "disappears"
+				$AnimationPlayer.play("blank")
 			else:
 				$AnimationPlayer.play("death")
 			hasJustDied = false
@@ -57,7 +58,9 @@ func _physics_process(delta):
 		if Input.is_action_pressed('ui_accept'):
 			if instaDeath:
 				get_tree().change_scene(PlayerVars.spawn)
+				queue_free()
 				PlayerVars.resetStats()
+				instaDeath = false
 			$AnimationPlayer.play("revive")
 				
 			
