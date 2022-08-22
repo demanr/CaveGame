@@ -1,7 +1,7 @@
 extends TileMap
 
 var depth = 1
-var verticalCoverage = 8 #number of blocks a player can jump vertically
+var verticalCoverage = 6 #number of blocks a player can jump vertically
 
 var startPos = Vector2()
 var health = 2

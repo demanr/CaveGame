@@ -6,13 +6,13 @@ const bulletPath = preload("res://scenes/Bullet.tscn")
 const UP = Vector2(0,-1)
 const GRAVITY = 18
 const MAXFALLSPEED = 300
-const MAXSPEED =  300 #100
-const JUMPFORCE =  450 #350
-const ACCEL =  30 #15
+const MAXSPEED =  150#300 #100
+const JUMPFORCE = 350 #450 #350
+const ACCEL =  15 #30 #15
 
 var motion = Vector2()
 var facing_right = true
-var max_jumps = 20
+var max_jumps = 2
 var jump_count = 0
 # is true if player is dead
 var hasJustDied = true
@@ -71,7 +71,7 @@ func _physics_process(delta):
 			#animation only plays if player is not jumping
 			is_on_floor() and $AnimationPlayer.play("walk")
 			if Input.is_action_pressed("sprint"):
-				motion.x += ACCEL*4
+				motion.x += ACCEL*2
 		elif Input.is_action_pressed("left"):
 			motion.x -= ACCEL
 			facing_right = false
@@ -90,10 +90,9 @@ func _physics_process(delta):
 			
 		if Input.is_action_just_pressed("jump"):
 			if is_on_floor():
-				print(position)
 				motion.y = - JUMPFORCE
 			elif jump_count < max_jumps:
-				motion.y = -JUMPFORCE  / 1.5
+				motion.y = -JUMPFORCE  / 1.2
 			jump_count += 1
 		if 	Input.is_action_just_released("jump"):
 			motion.y /= 2
