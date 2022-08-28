@@ -17,6 +17,10 @@ var jump_count = 0
 # is true if player is dead
 var hasJustDied = true
 var instaDeath = false
+#for controlling dash
+var dashing = false
+var canDash = true
+var dashDir = Vector2()
 #to ensure falling animation only played once
 var justFallen = true
 
@@ -64,7 +68,7 @@ func _physics_process(delta):
 			$AnimationPlayer.play("revive")
 				
 			
-	else:
+	elif !dashing:
 		if Input.is_action_pressed("right"):
 			motion.x += ACCEL
 			facing_right = true
@@ -107,16 +111,36 @@ func _physics_process(delta):
 					$AnimationPlayer.play("fall")
 					justFallen = false
 			
-		
+		if Input.is_action_just_pressed("dash"):
+			pass
 		
 		#handles shooting
 		if Input.is_action_just_pressed("shoot"):
 			shoot()
 		
-		
+		dash()
 		#for bullet direction
 		$Node2D.look_at(get_global_mouse_position())
 	motion = move_and_slide(motion, UP)
+	
+	
+func dash():
+	if Input.is_action_just_pressed("dash") and canDash:
+		$AnimationPlayer.play("dash")
+		if facing_right:
+			dashDir = Vector2(1,0)
+		else:
+			dashDir = Vector2(-1,0)
+		#dash speed
+		motion = dashDir.normalized() * 1000
+		canDash = false
+		dashing = true
+		#dash cooldown
+		yield(get_tree().create_timer(0.3),"timeout")
+		canDash = true
+		dashing = false
+	
+	
 func shoot():
 	var bullet = bulletPath.instance()
 	
@@ -131,6 +155,9 @@ func _input(event):
 		$Camera2D.zoom = $Camera2D.zoom - Vector2(0.1, 0.1)
 	if event.is_action_pressed('scroll-down'):
 		$Camera2D.zoom = $Camera2D.zoom + Vector2(0.2, 0.2)
+
+
+
 
 func respawn():
 	hasJustDied = true
