@@ -69,6 +69,7 @@ func _physics_process(delta):
 				
 			
 	elif !dashing:
+		
 		if Input.is_action_pressed("right"):
 			motion.x += ACCEL
 			facing_right = true
@@ -121,6 +122,9 @@ func _physics_process(delta):
 		dash()
 		#for bullet direction
 		$Node2D.look_at(get_global_mouse_position())
+	#no movement and not splatting (wait until fall effect over)
+	if motion.y == GRAVITY and round(motion.x) == 0 and $AnimationPlayer.current_animation != "splat" and PlayerVars.respawn == false:
+		$AnimationPlayer.play("idle")
 	motion = move_and_slide(motion, UP)
 	
 	
@@ -142,6 +146,7 @@ func dash():
 	
 	
 func shoot():
+	print(motion)
 	var bullet = bulletPath.instance()
 	
 	get_parent().add_child(bullet)
