@@ -308,9 +308,19 @@ func make_map():
 	var posOffset = 0
 	var enemyPos = 0
 	var enemyInstance = 0
+	
+	
+	
+	
+	find_start_room()
+	find_end_room()
+	
+	print(start_room.position.x + startRoomWidth)
 	#spawn enemies	
 	for tile in Map2.get_used_cells_by_id(tiles["CavePlatform1Way"]):
-		print(tile)
+		#stops enemies from spawning in start room
+		if Map.map_to_world(tile).x < start_room.position.x + startRoomWidth:
+			continue
 		#ensures space above to place enemy
 		if Map.get_cell(tile.x, tile.y-1) == tiles["CaveInnerBG"] and MapWall.get_cell(tile.x, tile.y-1) == -1:
 			spawnEnemy = rng.randi_range(1, enemySpawnRate)
@@ -323,10 +333,6 @@ func make_map():
 			#spawn enemy 2
 			elif spawnEnemy == 3:
 				pass
-				
-		#spawnEnemies(room, xMax/2, yMax/2, ul)
-	find_start_room()
-	find_end_room()
 	
 	createExit()
 
