@@ -315,12 +315,12 @@ func make_map():
 	find_start_room()
 	find_end_room()
 	
-	print(start_room.position.x + startRoomWidth)
 	#spawn enemies	
 	for tile in Map2.get_used_cells_by_id(tiles["CavePlatform1Way"]):
 		#stops enemies from spawning in start room
 		if Map.map_to_world(tile).x < start_room.position.x + startRoomWidth:
-			continue
+			if Map.map_to_world(tile).y < start_room.position.y + startRoomHeight and  Map.map_to_world(tile).y > start_room.position.y - startRoomHeight:
+				continue
 		#ensures space above to place enemy
 		if Map.get_cell(tile.x, tile.y-1) == tiles["CaveInnerBG"] and MapWall.get_cell(tile.x, tile.y-1) == -1:
 			spawnEnemy = rng.randi_range(1, enemySpawnRate)
