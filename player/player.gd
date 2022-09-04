@@ -37,9 +37,11 @@ func _physics_process(delta):
 		queue_free()
 		PlayerVars.resetStats()
 	
-	motion.y += GRAVITY
-	if motion.y > MAXFALLSPEED:
-		motion.y = MAXFALLSPEED
+	#gravity only if not dashing
+	if !dashing:
+		motion.y += GRAVITY
+		if motion.y > MAXFALLSPEED:
+			motion.y = MAXFALLSPEED
 	
 	if facing_right:
 		$Sprite.flip_h = false
@@ -140,7 +142,7 @@ func dash():
 		canDash = false
 		dashing = true
 		#dash cooldown
-		yield(get_tree().create_timer(0.3),"timeout")
+		yield(get_tree().create_timer(0.2),"timeout")
 		canDash = true
 		dashing = false
 	
