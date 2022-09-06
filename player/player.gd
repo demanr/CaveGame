@@ -108,6 +108,7 @@ func _physics_process(delta):
 			if motion.y < 0:
 				$AnimationPlayer.play("jump")
 			elif $FloorChecker.is_colliding():
+				print("SPLATTING")
 				$AnimationPlayer.play("splat")
 			elif motion.y > 0:
 				if justFallen:
@@ -127,6 +128,9 @@ func _physics_process(delta):
 	#no movement and not splatting (wait until fall effect over)
 	if motion.y == GRAVITY and round(motion.x) == 0 and $AnimationPlayer.current_animation != "splat" and PlayerVars.respawn == false:
 		$AnimationPlayer.play("idle")
+	else:
+		if $Light2D.get_color() != Color(1,1,1,1):
+			$Light2D.set_color(Color(1,1,1,1))
 	motion = move_and_slide(motion, UP)
 	
 	
@@ -148,7 +152,6 @@ func dash():
 	
 	
 func shoot():
-	print(motion)
 	var bullet = bulletPath.instance()
 	
 	get_parent().add_child(bullet)
