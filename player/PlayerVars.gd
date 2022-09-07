@@ -9,12 +9,15 @@ var baseHealth = 4
 #when player is hit or decides to forfeit life
 var respawn = false
 #where player is sent when they die
-var spawn = "res://scenes/Parkour.tscn" #"res://scenes/Spawn.tscn"
+var spawn = "res://scenes/Spawn.tscn" #"res://scenes/Parkour.tscn" #
 
 #
 var playerMode = "cave"
 
 var kills = 0
+
+var totalBerries = 0
+var berries = 0
 
 func _ready():
 	resetStats()
@@ -22,3 +25,4 @@ func _ready():
 func resetStats():
 	health = baseHealth
 	respawn = false
+	berries = 0

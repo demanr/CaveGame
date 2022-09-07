@@ -33,9 +33,7 @@ func _physics_process(delta):
 	if PlayerVars.health == -1:
 		instaDeath = true
 	elif PlayerVars.health < 1:
-		get_tree().change_scene(PlayerVars.spawn)
-		queue_free()
-		PlayerVars.resetStats()
+		death()
 	
 	#gravity only if not dashing
 	if !dashing:
@@ -63,9 +61,7 @@ func _physics_process(delta):
 			motion.x = lerp(motion.x, 0, 0.2)
 		if Input.is_action_pressed('ui_accept'):
 			if instaDeath:
-				get_tree().change_scene(PlayerVars.spawn)
-				queue_free()
-				PlayerVars.resetStats()
+				death()
 				instaDeath = false
 			$AnimationPlayer.play("revive")
 				
@@ -108,7 +104,6 @@ func _physics_process(delta):
 			if motion.y < 0:
 				$AnimationPlayer.play("jump")
 			elif $FloorChecker.is_colliding():
-				print("SPLATTING")
 				$AnimationPlayer.play("splat")
 			elif motion.y > 0:
 				if justFallen:
@@ -166,9 +161,14 @@ func _input(event):
 	if event.is_action_pressed('scroll-down'):
 		$Camera2D.zoom = $Camera2D.zoom + Vector2(0.2, 0.2)
 
-
-
-
 func respawn():
 	hasJustDied = true
 	PlayerVars.respawn = false
+
+
+func death():
+	#updates berry quantity
+	PlayerVars.totalBerries += PlayerVars.berries
+	get_tree().change_scene(PlayerVars.spawn)
+	queue_free()
+	PlayerVars.resetStats()

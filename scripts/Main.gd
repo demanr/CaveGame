@@ -7,6 +7,7 @@ var font = preload("res://fonts/Basic96.tres")
 var Enemy = preload("res://scenes/Enemy.tscn")
 var Slime = preload("res://scenes/Slime.tscn")
 var Door = preload("res://scenes/Door.tscn")
+var BerryBush = preload("res://scenes/BerryBush.tscn")
 
 onready var Map = $TileMap
 onready var Map2 = $Platforms
@@ -21,7 +22,7 @@ var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 var tile_size = 16
 #how many rooms to originally spawn
-var num_rooms = 20
+var num_rooms = 15
 var min_size = 6
 var max_size = 12
 # bigger number means more spread in that direction
@@ -36,8 +37,11 @@ var startRoomHeight = 0
 #for generating paths
 var bgIndex = 0
 
-#enemy spawn rate, max of rand number to determine if enemy spawn
-var enemySpawnRate = 8
+# out of 100, likelyhood of spawning
+var enemySpawnRate = 10
+var berryBushSpawnRate = 10
+#likel
+var berrylessbushSpawnRate = 5
 
 #likelyhood of widder corridors being generated, 1-10
 var corridorWidthChance = 5
@@ -113,7 +117,8 @@ func _draw():
 				draw_line(Vector2(pp.x, pp.y), Vector2(cp.x,cp.y), Color(1,1,0), 10, true)
 				
 func _process(delta):
-	get_node("CanvasLayer/Label").text = "STAM: " + str(PlayerVars.health)
+	get_node("CanvasLayer/VBoxContainer/Health").text = "STAM: " + str(PlayerVars.health)
+	get_node("CanvasLayer/VBoxContainer/Berries").text = "BERRIES: " + str(PlayerVars.berries)
 	update()
 
 func _input(event):
@@ -304,7 +309,7 @@ func make_map():
 					spawnVine -= 1
 					MapVines.set_cell(ul.x + x,ul.y + y, tiles["Vines" + str(rng.randi_range(1,4))])
 					
-	var spawnEnemy = 0
+	var interactableRNG = 0
 	var posOffset = 0
 	var enemyPos = 0
 	var enemyInstance = 0
@@ -315,24 +320,28 @@ func make_map():
 	find_start_room()
 	find_end_room()
 	
-	#spawn enemies	
+	#spawn interactables	
 	for tile in Map2.get_used_cells_by_id(tiles["CavePlatform1Way"]):
-		#stops enemies from spawning in start room
+		#stops interactables from spawning in start room
 		if Map.map_to_world(tile).x < start_room.position.x + startRoomWidth:
 			if Map.map_to_world(tile).y < start_room.position.y + startRoomHeight and  Map.map_to_world(tile).y > start_room.position.y - startRoomHeight:
 				continue
 		#ensures space above to place enemy
 		if Map.get_cell(tile.x, tile.y-1) == tiles["CaveInnerBG"] and MapWall.get_cell(tile.x, tile.y-1) == -1:
-			spawnEnemy = rng.randi_range(1, enemySpawnRate)
+			interactableRNG = rng.randi_range(0, 100)
 			#spawn slime
-			if spawnEnemy == 1:
+			
+			if interactableRNG < enemySpawnRate:
 				enemyPos = Map2.map_to_world(tile) - Vector2(0,8)
 				enemyInstance = Slime.instance()
 				enemyInstance.make_enemy(enemyPos)
 				$Enemies.add_child(enemyInstance)
 			#spawn enemy 2
-			elif spawnEnemy == 3:
-				pass
+			elif interactableRNG < enemySpawnRate + berryBushSpawnRate:
+				placeBerryBush(tile, true)
+			elif interactableRNG < enemySpawnRate + berryBushSpawnRate + berrylessbushSpawnRate:
+				placeBerryBush(tile, false)
+			
 	
 	createExit()
 
@@ -516,14 +525,22 @@ func createExit():
 	var exitDoorPosition = Map.world_to_map(end_room.position )
 	#removes platform if above door
 	MapInteract.set_cell(endRoomCenter.x, endRoomCenter.y, tiles["CaveDoor"])
-	Map2.set_cell(endRoomCenter.x, endRoomCenter.y + 1, tiles["CavePlatform"])
+	Map2.set_cell(endRoomCenter.x, endRoomCenter.y + 1, tiles["CavePlatform1Way"])
 	Map2.set_cell(endRoomCenter.x, endRoomCenter.y, -1)
 	
 	var doorTiles = MapInteract.get_used_cells_by_id(tiles["CaveDoor"])
 	# add vector to fix position offset
-	exitDoor.place_door(MapInteract.map_to_world(doorTiles[0] + Vector2(0,1)))
+	exitDoor.place(MapInteract.map_to_world(doorTiles[0] + Vector2(0,1)))
 	
 	$Doors.add_child(exitDoor)
+
+func placeBerryBush(_tile, berry):
+	var berryBush = BerryBush.instance()
+	var berrybushPosition = MapInteract.map_to_world(_tile)
+	
+	berryBush.place((berrybushPosition),berry)
+	
+	$Bushes.add_child(berryBush)
 
 func spawnEnemies(room, xSpawnMax, ySpawnMax, ul):
 	var roomBounds = room.size / tile_size
