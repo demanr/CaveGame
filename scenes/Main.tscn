@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://fonts/Basic96.tres" type="DynamicFont" id=1]
-[ext_resource path="res://tileset/tileset.tres" type="TileSet" id=2]
+[ext_resource path="res://tileset/tileset16.tres" type="TileSet" id=2]
 [ext_resource path="res://scripts/Main.gd" type="Script" id=4]
-[ext_resource path="res://tileset/extrasTileset.tres" type="TileSet" id=5]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 4 )
@@ -11,39 +10,81 @@ __meta__ = {
 "_editor_description_": "``	``"
 }
 
-[node name="Rooms" type="Node" parent="."]
+[node name="Bushes" type="Node" parent="."]
 
-[node name="Enemies" type="Node" parent="."]
+[node name="Rooms" type="Node" parent="."]
 
 [node name="Doors" type="Node" parent="."]
 
+[node name="Enemies" type="Node" parent="."]
+
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
-cell_size = Vector2( 32, 32 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 2
+collision_mask = 5
+format = 1
+
+[node name="Wall Additions" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 2
+collision_mask = 5
+format = 1
+
+[node name="BgDecor" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 2
+collision_mask = 5
+format = 1
+
+[node name="Vines" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
 collision_layer = 2
 collision_mask = 5
 format = 1
 
 [node name="Platforms" type="TileMap" parent="."]
+z_index = 1
 tile_set = ExtResource( 2 )
-cell_size = Vector2( 32, 32 )
+cell_size = Vector2( 16, 16 )
 collision_layer = 2
 collision_mask = 5
 format = 1
 
-[node name="Spikes" type="TileMap" parent="."]
-tile_set = ExtResource( 5 )
+[node name="Decor" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 2
+collision_mask = 5
+format = 1
+
+[node name="Interactables" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
 cell_size = Vector2( 16, 16 )
 format = 1
 
-[node name="LoadCam" type="Camera2D" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+margin_left = 40.0
+margin_top = 40.0
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Health" type="Label" parent="CanvasLayer/VBoxContainer"]
+margin_bottom = 32.0
+custom_fonts/font = ExtResource( 1 )
+
+[node name="Berries" type="Label" parent="CanvasLayer/VBoxContainer"]
+margin_top = 36.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 1 )
+
+[node name="LoadCam" type="Camera2D" parent="CanvasLayer"]
 zoom = Vector2( 5, 5 )
 
-[node name="Label" type="Label" parent="LoadCam"]
-margin_right = 192.0
-margin_bottom = 64.0
-custom_fonts/font = ExtResource( 1 )
-text = "STAM"
-
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color( 0.384314, 0.384314, 0.384314, 1 )
+color = Color( 0.517647, 0.376471, 0.545098, 1 )
