@@ -21,6 +21,10 @@ I wanted to really play with the whole idea of a translucent player. In the futu
 
 https://user-images.githubusercontent.com/97637778/216751276-53b6f9ea-6862-4129-939b-63f4100fd764.mov
 
+## Art/Music
+
+Despite not being an artist by any means, I am quite proud of how all the spritework turned out. It was a great learning opportunity to figure out how to make spritesheets, background, and animations that work cohesively together. I would have loved to have music and sound effects, but due to being the only person working on this project I had no real means of creating something that wouldn't redact from the game. Perhaps in the future I will add some small sound effects.
+
 # Conclusion
 
 Big thanks to the kidscancode blogs, as one really helped me understand how to go about room layout and path creation. The blog mentioned can be found here: http://kidscancode.org/blog/2018/12/godot3_procgen6/ 
