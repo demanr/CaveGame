@@ -17,7 +17,7 @@ https://user-images.githubusercontent.com/97637778/216751154-32e8c0d5-e0c6-45db-
 
 ### Extra Features
 
-I wanted to really play with the whole idea of a translucent player. In the futurem I hope to add puzzles that can utilize this, which is why the character stops emitting light when unmoving, and how light can shine through the player (maybe it can relate to some lore someday as well if I continue with this project!). Here is a demonstration of the AFK and lighting effect.
+I wanted to really play with the whole idea of a translucent player. In the future I hope to add puzzles that can utilize this, which is why the character stops emitting light when unmoving, and how light can shine through the player (maybe it can relate to some story aspects someday as well if I choose to continue with this project!). Here is a demonstration of the AFK and lighting effect.
 
 https://user-images.githubusercontent.com/97637778/216751276-53b6f9ea-6862-4129-939b-63f4100fd764.mov
 
